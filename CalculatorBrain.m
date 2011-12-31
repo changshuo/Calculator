@@ -63,7 +63,7 @@
 + (NSString *)descriptionOfTopOfStack:(NSMutableArray *)stack
               PreviousOperator:(NSString *)preOp
 {
-    NSString *description;
+    NSString *description = @"0";
     id topOfStack = [stack lastObject];
     if (topOfStack) [stack removeLastObject];
     
@@ -85,6 +85,7 @@
         }
     }
     
+    //if (description == nil) return @"0";
     return description;
 }
 
@@ -144,7 +145,7 @@
 
 + (NSSet *)variablesUsedInProgram:(id)program
 {
-    NSMutableSet* variableSet;
+    NSMutableSet* variableSet = [[NSMutableSet alloc] init];
     NSSet* operationSet = [NSSet setWithObjects:@"+",@"-",@"*",@"/",@"sin",@"cos",@"sqrt",@"π", nil];
     if ([program isKindOfClass:[NSArray class]]) {
         for (id item in program) {
@@ -180,7 +181,7 @@
       usingVariables:(NSDictionary *)variableValues
 {
     NSMutableArray *stack;
-    if ([program isKindOfClass:[NSArray class]]&&variableValues) {
+    if ([program isKindOfClass:[NSArray class]]) {
         stack = [program mutableCopy];
         NSSet *variableSet = [self variablesUsedInProgram:program];
         for (NSString *key in variableSet) {

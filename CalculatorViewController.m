@@ -44,33 +44,36 @@
 }
 
 - (IBAction)pointPressed {
-    if ([self hasDecimalPoint:self.display.text]) {
+    if (![self hasDecimalPoint:self.display.text]) {
         self.display.text = [self.display.text stringByAppendingString:@"."];
         self.userIsInTheMiddleOfEnteringNumber = YES;
     }
 }
 
 - (BOOL) hasDecimalPoint:(NSString *) str{
-    if (floor([str doubleValue])==[str doubleValue]) return YES;
-    return NO;
+    if (floor([str doubleValue])==[str doubleValue]) return NO;
+    return YES;
 }
 
 - (IBAction)enterPressed {
-    [self.brain pushOperand:[self.display.text doubleValue]];
-    [self displayHistory:self.display.text];
-    self.userIsInTheMiddleOfEnteringNumber = NO;
+        [self.brain pushOperand:[self.display.text doubleValue]];
+        [self displayHistory:self.display.text];
+        self.userIsInTheMiddleOfEnteringNumber = NO;
 }
 
 - (IBAction)operationPressed:(UIButton *)sender {
     if (self.userIsInTheMiddleOfEnteringNumber) [self enterPressed];
     double result = [self.brain performOperation:sender.currentTitle];
     [self displayHistory:sender.currentTitle];
-    NSString *resultString = [NSString stringWithFormat:@"%g",result]; // puting double into a string
+    NSString *resultString = [NSString stringWithFormat:@"%g",result];
     self.display.text = resultString;
 }
 
 - (IBAction)variablePressed:(UIButton *)sender {
-    [self.brain pushVariable:sender.currentTitle];
+    if (!self.userIsInTheMiddleOfEnteringNumber) {
+        [self.brain pushVariable:sender.currentTitle];
+        self.display.text = sender.currentTitle;
+    }
 }
 
 - (void) displayHistory:(NSString *) str{
@@ -84,7 +87,7 @@
         self.userIsInTheMiddleOfEnteringNumber = NO;
         self.brain = [[CalculatorBrain alloc] init];
     }else if([sender.currentTitle isEqualToString:@"Undo"]){
-        // undo codes here
+        
     }
 }
 
@@ -93,12 +96,12 @@
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
     [formatter setUsesSignificantDigits:YES];
     NSString *result = [formatter stringFromNumber:[NSNumber numberWithDouble:[CalculatorBrain runProgram:self.brain.program usingVariables:self.testVariableValues]]];
-    self.display.text = result;
+    self.display.text = [result isEqualToString:@"0.0"] ? @"0" : result; //hack
     self.variables.text = @"";
     for (id key in self.testVariableValues) {
         id value = [self.testVariableValues objectForKey:key];
         if ([key isKindOfClass:[NSString class]]&&[value isKindOfClass:[NSNumber class]]) {
-            [self.variables.text stringByAppendingString:[NSString stringWithFormat:@"%@ = %@ ",key, [formatter stringFromNumber:value]]];
+            self.variables.text = [self.variables.text stringByAppendingString:[NSString stringWithFormat:@"%@ = %@ ",key, [[formatter stringFromNumber:value] isEqualToString: @"0.0"] ? @"0" : [formatter stringFromNumber:value]]];
         }
     }
     
@@ -116,6 +119,7 @@
 }
 
 - (void)viewDidUnload {
+    [self setVariables:nil];
     [self setVariables:nil];
     [super viewDidUnload];
 }

@@ -460,11 +460,11 @@
                     <connections>
                         <outlet property="display" destination="mEV-HT-290" id="bNf-io-GtF"/>
                         <outlet property="history" destination="tgN-K4-fbV" id="bcB-kX-iBW"/>
-                        <outlet property="variables" destination="tgN-K4-fbV" id="pGf-Ba-IDY"/>
+                        <outlet property="variables" destination="1Ao-bo-utk" id="8Bx-hP-pAB"/>
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="-179" y="-172"/>
+            <point key="canvasLocation" x="-45" y="-90"/>
         </scene>
     </scenes>
     <classes>
