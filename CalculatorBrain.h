@@ -12,6 +12,7 @@
 - (void)pushOperand:(double)operand;
 - (void)pushVariable:(NSString *)variable;
 - (double)performOperation:(NSString *)operation;
+- (void) popProgramStack;
 
 @property (readonly) id program;
 + (double)runProgram:(id)program;

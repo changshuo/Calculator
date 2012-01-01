@@ -87,16 +87,24 @@
         self.userIsInTheMiddleOfEnteringNumber = NO;
         self.brain = [[CalculatorBrain alloc] init];
     }else if([sender.currentTitle isEqualToString:@"Undo"]){
-        
+        if (self.userIsInTheMiddleOfEnteringNumber) {
+            if ([self.display.text length]>0) self.display.text = [self.display.text substringToIndex:[self.display.text length]-1];
+            if ([self.display.text length]==1) [self updateDisplays];
+        }else{
+            [self.brain popProgramStack];
+            [self updateDisplays];
+        }
     }
 }
 
 - (void)updateDisplays
 {
+    self.userIsInTheMiddleOfEnteringNumber = false;
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
     [formatter setUsesSignificantDigits:YES];
     NSString *result = [formatter stringFromNumber:[NSNumber numberWithDouble:[CalculatorBrain runProgram:self.brain.program usingVariables:self.testVariableValues]]];
     self.display.text = [result isEqualToString:@"0.0"] ? @"0" : result; //hack
+    self.history.text = [[CalculatorBrain descriptionOfProgram:self.brain.program] isEqualToString: @"0"]&& [self.display.text isEqualToString:@"0"] ? @"" : [CalculatorBrain descriptionOfProgram:self.brain.program];
     self.variables.text = @"";
     for (id key in self.testVariableValues) {
         id value = [self.testVariableValues objectForKey:key];
@@ -118,9 +126,5 @@
     [self updateDisplays];
 }
 
-- (void)viewDidUnload {
-    [self setVariables:nil];
-    [self setVariables:nil];
-    [super viewDidUnload];
-}
+
 @end

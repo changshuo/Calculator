@@ -29,6 +29,10 @@
     return _programStack;
 }
 
+- (void) popProgramStack{
+    if (self.programStack) [self.programStack removeLastObject];
+}
+
 - (void)pushOperand:(double)operand
 {
     [self.programStack addObject:[NSNumber numberWithDouble:operand]];
@@ -84,8 +88,7 @@
             description = topOfStack;
         }
     }
-    
-    //if (description == nil) return @"0";
+
     return description;
 }
 
